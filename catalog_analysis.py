@@ -74,7 +74,7 @@ def decade_label(year: int) -> str:
 # else:
 #     print('Шедевров не найдено')
 
-def count_long_movies(movies: list, threshold: int = 120):
+def count_long_movies(movies: list, threshold: int = 120) -> int:
     if not movies:
         return
     count = 0
@@ -105,7 +105,7 @@ def titles_sorted_by_rating(movies: list) -> list:
     return sorted([(normalize_title(movie['title']), movie['rating']) for movie in movies],
                   key=lambda x: x[1], reverse=True)
 
-def top_n_by_rating(movies: list, n: int = 3):
+def top_n_by_rating(movies: list, n: int = 3) -> list:
     return titles_sorted_by_rating(movies)[:n]
 
 def count_by_genre(movies: list) -> dict:
@@ -126,5 +126,24 @@ def actor_filmography(movies: list) -> dict:
             actor_movies.setdefault(actor, []).append(normalize_title(movie['title']))
     return actor_movies
 
-movie_top_half = {movie['title']: movie['rating'] for movie in movies if movie['rating'] > average_rating(movies)}
-print(movie_top_half)
+# movie_top_half = {movie['title']: movie['rating'] for movie in movies if movie['rating'] > average_rating(movies)}
+
+def all_genres(movies: list) -> set:
+    if not movies:
+        return
+    genres = set()
+    for movie in movies:
+        genres = genres | set(movie['genres'])
+    return genres
+
+def common_actors(movie1: dict, movie2: dict) -> set:
+    if not movie1 or not movie2:
+        return
+    return set(movie1['actors']) & set(movie2['actors'])
+
+def genres_only_in_one(movies_a: dict, movies_b: dict) -> set:
+    if not movies_a or not movies_b:
+        return
+    return all_genres(movies_a) - all_genres(movies_b)
+
+print(genres_only_in_one(movies[5:6], movies[:5]))
