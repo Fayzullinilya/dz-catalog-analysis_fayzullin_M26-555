@@ -1,0 +1,5 @@
+.venv
+.ruff_cache
+src/
+.python-version
+README.md
