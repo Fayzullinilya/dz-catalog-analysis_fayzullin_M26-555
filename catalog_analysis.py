@@ -60,6 +60,10 @@ def decade_label(year: int) -> str:
             label = 'старые'
     return label
 
+# В условии не сказано, что следующие блоки нужно оформлять в функции.
+# Закоментировать их, что бы не оставлять открытый код, так как по условию
+# дожна быть одна точка входа build_report(movies).   
+
 # for movie in movies:
 #     if 'comedy' in movie['genres']:
 #         continue
@@ -154,4 +158,26 @@ def iter_high_rated(movies: list, min_rating: float = 8.0):
 # for movie in iter_high_rated(movies):
 #    print(format_report_line(movie))
 
-print(sum(m["duration_min"] for m in movies if m["rating"] > 7))  
+# print(sum(movie["duration_min"] for movie in movies if movie["rating"] > 7))
+
+def build_report(movies: list) -> None:
+    if not movies:
+        return
+    print('ОТЧЕТ ПО КАТАЛОГУ')
+    print(f'Средний рейтинг: {average_rating(movies)}')
+    print(f'Средний возраст фильмов: {catalog_age_stats(movies)[2]} лет')
+    
+    print('\nТоп-3 фильма:')
+    sorted_by_rating = sorted(movies, key=lambda movie: movie["rating"], reverse=True)[:3]
+    for movie in sorted_by_rating:
+        print(format_report_line(movie))
+
+    print('\nФильмов по жанрам:')
+    sorted_count_by_gendre = sorted(count_by_genre(movies).items(), key=lambda item: item[1], reverse=True)
+    for genre in sorted_count_by_gendre:
+        print(f'{genre[0]} - {genre[1]}')
+    
+    print(f'\nВсе жанры каталога: {', '.join(all_genres(movies))}')
+
+if __name__ == "__main__":
+    build_report(movies)
