@@ -80,4 +80,16 @@ def count_long_movies(movies: list, threshold: int = 120):
         count += int(movie['duration_min']) > threshold
     return count
 
-print(count_long_movies(movies))
+def normalize_title(title: str) ->str:
+    new_title = ''
+    words = title.split()
+    for word in words:
+        new_title += word[0].upper() + word[1:] + ' '
+    return new_title
+
+def make_slug(title: str) ->str:
+    return title.lower().replace(' ','-')
+
+def format_report_line(movie: dict) -> str:
+    return f'"{normalize_title(movie['title'])}" ({movie['year']}) - {movie['rating']}/10, ' + \
+           f'{duration_in_hours(movie['duration_min'])}, жанры: {', '.join(sorted(movie['genres']))}'
