@@ -91,5 +91,16 @@ def make_slug(title: str) ->str:
     return title.lower().replace(' ','-')
 
 def format_report_line(movie: dict) -> str:
+    if not movie:
+        return
     return f'"{normalize_title(movie['title'])}" ({movie['year']}) - {movie['rating']}/10, ' + \
            f'{duration_in_hours(movie['duration_min'])}, жанры: {', '.join(sorted(movie['genres']))}'
+
+def titles_sorted_by_rating(movies: list) -> list:
+    return sorted([(normalize_title(movie['title']), movie['rating']) for movie in movies],
+                  key=lambda x: x[1], reverse=True)
+
+def top_n_by_rating(movies: list, n: int = 3):
+    return titles_sorted_by_rating(movies)[:n]
+
+print(top_n_by_rating(movies,5))
