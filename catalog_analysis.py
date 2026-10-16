@@ -2,7 +2,8 @@ import math
 
 movies = [
     {"title": "The Dune Chronicles", "year": 2021, "genres": {"sci-fi", "drama"},
-     "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
+     "rating": 8.6, "duration_min": 155,
+     "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
     {"title": "Kitchen Stories", "year": 2019, "genres": {"comedy", "drama"},
      "rating": 7.1, "duration_min": 98, "actors": ["A. Novak", "M. Ferguson"]},
     {"title": "silent hours", "year": 2016, "genres": {"thriller", "drama"},
@@ -47,7 +48,8 @@ def rating_tier(rating: float) -> str:
         category = 'шедевр'
     elif rating >= 7:
         category = 'хорошо'
-    else: category = 'средне' if rating >= 5 else 'слабо'
+    else:
+        category = 'средне' if rating >= 5 else 'слабо'
     return category
 
 def decade_label(year: int) -> str:
@@ -62,7 +64,8 @@ def decade_label(year: int) -> str:
 
 # В условии не сказано, что следующие блоки нужно оформлять в функции.
 # Закоментировать их, что бы не оставлять открытый код, так как по условию
-# дожна быть одна точка входа build_report(movies).   
+# дожна быть одна точка входа build_report(movies).
+# Далее есть еще 2 таких блока
 
 # for movie in movies:
 #     if 'comedy' in movie['genres']:
@@ -91,7 +94,7 @@ def normalize_title(title: str) ->str:
     words = title.split()
     for word in words:
         new_title += word[0].upper() + word[1:] + ' '
-    return new_title
+    return new_title.strip()
 
 def make_slug(title: str) ->str:
     return title.lower().replace(' ','-')
@@ -99,15 +102,17 @@ def make_slug(title: str) ->str:
 def format_report_line(movie: dict) -> str:
     if not movie:
         return
-    return (f'"{normalize_title(movie['title'])}" ({movie['year']}) - {movie['rating']}/10, ' +
-           f'{duration_in_hours(movie['duration_min'])}, жанры: {', '.join(sorted(movie['genres']))}'
+    return (f'"{normalize_title(movie['title'])}" ({movie['year']}) - ' +
+            f'{movie['rating']}/10, {duration_in_hours(movie['duration_min'])}, ' + 
+            f'жанры: {', '.join(sorted(movie['genres']))}'
     )
 
 def titles_sorted_by_rating(movies: list) -> list:
     if not movies:
             return
-    return sorted([(normalize_title(movie['title']), movie['rating']) for movie in movies],
-                  key=lambda x: x[1], reverse=True)
+    return (sorted([(normalize_title(movie['title']), movie['rating'])
+            for movie in movies], key=lambda x: x[1], reverse=True)
+    )
 
 def top_n_by_rating(movies: list, n: int = 3) -> list:
     return titles_sorted_by_rating(movies)[:n]
@@ -130,8 +135,10 @@ def actor_filmography(movies: list) -> dict:
             actor_movies.setdefault(actor, []).append(normalize_title(movie['title']))
     return actor_movies
 
-# movie_top_half = {movie['title']: movie['rating'] for movie in movies if movie['rating'] > average_rating(movies)}
-
+# movie_top_half = {movie['title']: movie['rating']
+#                   for movie in movies if movie['rating'] > average_rating(movies)}
+# print(movie_top_half
+    
 def all_genres(movies: list) -> set:
     if not movies:
         return
@@ -168,16 +175,23 @@ def build_report(movies: list) -> None:
     print(f'Средний возраст фильмов: {catalog_age_stats(movies)[2]} лет')
     
     print('\nТоп-3 фильма:')
-    sorted_by_rating = sorted(movies, key=lambda movie: movie["rating"], reverse=True)[:3]
+    # Функция top_n_by_rating() не подходит, поскольку возвразает список из 
+    # tuple('title', 'rating') а нам для вывода нужна полная информация о фильме.
+    # Сортируем здесь.
+    sorted_by_rating = sorted(movies,
+                              key=lambda movie: movie["rating"],
+                              reverse=True)[:3]
     for movie in sorted_by_rating:
         print(format_report_line(movie))
 
     print('\nФильмов по жанрам:')
-    sorted_count_by_gendre = sorted(count_by_genre(movies).items(), key=lambda item: item[1], reverse=True)
+    sorted_count_by_gendre = sorted(count_by_genre(movies).items(),
+                                    key=lambda item: item[1],
+                                    reverse=True)
     for genre in sorted_count_by_gendre:
         print(f'{genre[0]} - {genre[1]}')
     
     print(f'\nВсе жанры каталога: {', '.join(all_genres(movies))}')
 
 if __name__ == "__main__":
-    build_report(movies)
+     build_report(movies)
