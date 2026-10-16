@@ -59,3 +59,25 @@ def decade_label(year: int) -> str:
         case _ if year < 2015:
             label = 'старые'
     return label
+
+# for movie in movies:
+#     if 'comedy' in movie['genres']:
+#         continue
+#     print(movie['title'])
+
+# i = 0
+# while i < len(movies):
+#     if movies[i]['rating'] > 9:
+#         print(movies[i]['title'])
+#         break
+#     i += 1
+# else:
+#     print('Шедевров не найдено')
+
+def count_long_movies(movies: list, threshold: int = 120):
+    count = 0
+    for movie in movies:
+        count += int(movie['duration_min']) > threshold
+    return count
+
+print(count_long_movies(movies))
