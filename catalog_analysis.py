@@ -75,6 +75,8 @@ def decade_label(year: int) -> str:
 #     print('Шедевров не найдено')
 
 def count_long_movies(movies: list, threshold: int = 120):
+    if not movies:
+        return
     count = 0
     for movie in movies:
         count += int(movie['duration_min']) > threshold
@@ -93,14 +95,36 @@ def make_slug(title: str) ->str:
 def format_report_line(movie: dict) -> str:
     if not movie:
         return
-    return f'"{normalize_title(movie['title'])}" ({movie['year']}) - {movie['rating']}/10, ' + \
+    return (f'"{normalize_title(movie['title'])}" ({movie['year']}) - {movie['rating']}/10, ' +
            f'{duration_in_hours(movie['duration_min'])}, жанры: {', '.join(sorted(movie['genres']))}'
+    )
 
 def titles_sorted_by_rating(movies: list) -> list:
+    if not movies:
+            return
     return sorted([(normalize_title(movie['title']), movie['rating']) for movie in movies],
                   key=lambda x: x[1], reverse=True)
 
 def top_n_by_rating(movies: list, n: int = 3):
     return titles_sorted_by_rating(movies)[:n]
 
-print(top_n_by_rating(movies,5))
+def count_by_genre(movies: list) -> dict:
+    if not movies:
+        return
+    count_by_genres = {}
+    for movie in movies:
+        for genre in movie['genres']:
+            count_by_genres[genre] = count_by_genres.get(genre, 0) + 1
+    return count_by_genres
+
+def actor_filmography(movies: list) -> dict:
+    if not movies:
+        return
+    actor_movies = {}
+    for movie in movies:
+        for actor in movie['actors']:
+            actor_movies.setdefault(actor, []).append(normalize_title(movie['title']))
+    return actor_movies
+
+movie_top_half = {movie['title']: movie['rating'] for movie in movies if movie['rating'] > average_rating(movies)}
+print(movie_top_half)
